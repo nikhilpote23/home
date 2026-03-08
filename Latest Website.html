@@ -1,0 +1,728 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Nikhil Pote — Salesforce Architect</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=DM+Serif+Display&display=swap" rel="stylesheet"/>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --white:#fff;--off:#f7f5f2;--off2:#f0ece6;
+  --dark:#1a1a1a;--dark2:#2d2d2d;--muted:#7a7a7a;--muted2:#aaa;
+  --accent:#e05c40;--accent-h:#c94832;--border:#e8e3dc;
+  --shadow:0 2px 24px rgba(0,0,0,.07);--shadow2:0 8px 40px rgba(0,0,0,.10);
+  --font:'DM Sans',sans-serif;--serif:'DM Serif Display',serif;
+  --fs-xs:.72rem;--fs-sm:.82rem;--fs-base:.9rem;--fs-md:1rem;--fs-lg:1.05rem;
+  --lh:1.7;--radius:10px;
+}
+html{scroll-behavior:smooth}
+body{background:var(--white);color:var(--dark);font-family:var(--font);font-size:var(--fs-base);line-height:var(--lh);overflow-x:hidden}
+a{text-decoration:none;color:inherit}
+p{font-size:var(--fs-base);line-height:var(--lh);color:var(--muted)}
+
+/* ══ HERO ZONE ══ */
+#hero-zone{position:relative;overflow:hidden}
+
+/* ══ BACKGROUND PHOTO ══ */
+#photo-bg{position:absolute;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none;}
+#photo-bg img{display:block;width:100%;height:100%;object-fit:cover;object-position:center top;}
+#photo-bg::after{content:'';position:absolute;inset:0;background:rgba(247,245,242,0.82);}
+#hero-zone>*:not(#photo-bg){position:relative;z-index:1}
+
+/* ══ TOPBAR ══ */
+.topbar{background:var(--dark);color:#ccc;font-size:var(--fs-xs);padding:.55rem 5%;display:flex;justify-content:space-between;align-items:center}
+.topbar a{color:#ccc;margin-left:1.2rem;font-size:var(--fs-xs);transition:.2s}
+.topbar a:hover{color:var(--accent)}
+
+/* ══ NAV ══ */
+nav{background:var(--white);border-bottom:1px solid var(--border);padding:1rem 5%;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:200;box-shadow:var(--shadow)}
+.nav-logo{font-family:var(--serif);font-size:1.5rem;color:var(--dark)}
+.nav-logo span{color:var(--accent)}
+.nav-links{display:flex;gap:1.8rem;list-style:none}
+.nav-links a{font-size:var(--fs-sm);font-weight:500;color:var(--muted);transition:.2s}
+.nav-links a:hover,.nav-links a.active{color:var(--dark)}
+.nav-cta{background:var(--accent);color:#fff;padding:.5rem 1.3rem;border-radius:4px;font-size:var(--fs-sm);font-weight:600;transition:.2s}
+.nav-cta:hover{background:var(--accent-h)}
+.hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;background:none;border:none;padding:4px}
+.hamburger span{display:block;width:22px;height:2px;background:var(--dark)}
+.mob-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:298}
+.mob-menu{position:fixed;top:0;right:-100%;width:75%;max-width:300px;height:100%;background:var(--white);z-index:299;padding:4rem 2rem 2rem;display:flex;flex-direction:column;gap:1.5rem;transition:.35s;box-shadow:-4px 0 24px rgba(0,0,0,.12)}
+.mob-menu.open{right:0}
+.mob-close{position:absolute;top:1rem;right:1.2rem;font-size:1.3rem;cursor:pointer;color:var(--muted);background:none;border:none}
+.mob-menu a{font-size:1.05rem;font-weight:600;color:var(--dark);border-bottom:1px solid var(--border);padding-bottom:.8rem}
+
+/* ══ BUTTONS ══ */
+.btn{display:inline-flex;align-items:center;gap:.4rem;padding:.72rem 1.6rem;border-radius:4px;font-size:var(--fs-sm);font-weight:600;transition:.2s;cursor:pointer;border:none;font-family:var(--font);line-height:1}
+.btn-accent{background:var(--accent);color:#fff}
+.btn-accent:hover{background:var(--accent-h);transform:translateY(-1px);box-shadow:0 4px 16px rgba(224,92,64,.3)}
+.btn-outline{background:transparent;color:var(--dark);border:1.5px solid var(--dark)}
+.btn-outline:hover{background:var(--dark);color:#fff}
+.btn-outline-accent{background:transparent;color:var(--accent);border:1.5px solid var(--accent)}
+.btn-outline-accent:hover{background:var(--accent);color:#fff}
+
+/* ══ SECTIONS ══ */
+section{padding:5rem 5%}
+.sec-eyebrow{font-size:var(--fs-xs);text-transform:uppercase;letter-spacing:.18em;color:var(--accent);font-weight:600;margin-bottom:.4rem;display:block}
+.sec-title{font-family:var(--serif);font-size:clamp(1.8rem,4vw,2.6rem);color:var(--dark);line-height:1.15;margin-bottom:.4rem}
+.sec-sub{font-size:var(--fs-base);color:var(--muted);line-height:var(--lh);max-width:520px;margin-bottom:2.5rem}
+.sec-divider{width:40px;height:3px;background:var(--accent);margin:.7rem 0 1.5rem;border-radius:2px}
+.center{text-align:center}
+.center .sec-sub,.center .sec-divider{margin-left:auto;margin-right:auto}
+
+/* ══ HERO ══ */
+#home{padding:0;min-height:calc(100vh - 93px);display:grid;grid-template-columns:1fr 1fr;background:transparent}
+.hero-left{padding:4.5rem 3.5rem 4.5rem 5%;display:flex;flex-direction:column;justify-content:center}
+.hero-tag{display:inline-flex;align-items:center;gap:.5rem;background:var(--off);border:1px solid var(--border);padding:.35rem 1rem;border-radius:2rem;font-size:var(--fs-xs);font-weight:600;text-transform:uppercase;letter-spacing:.12em;color:var(--accent);margin-bottom:1.6rem;width:fit-content}
+.hero-tag::before{content:'';width:7px;height:7px;border-radius:50%;background:var(--accent);animation:pulse 1.6s infinite;flex-shrink:0}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.3;transform:scale(.75)}}
+.hero-title{font-family:var(--serif);font-size:clamp(2.6rem,5vw,4.4rem);line-height:1.05;color:var(--dark);margin-bottom:1rem}
+.hero-title .line2{color:var(--accent);display:block}
+.hero-desc{font-size:var(--fs-md);color:var(--muted);line-height:var(--lh);max-width:430px;margin-bottom:1.8rem}
+.hero-btns{display:flex;gap:.9rem;flex-wrap:wrap;margin-bottom:2.8rem}
+.hero-bottom{display:grid;grid-template-columns:1fr 1fr;gap:2.5rem;border-top:1px solid var(--border);padding-top:2rem}
+.hero-skills-col h5,.hero-why-col h5{font-size:var(--fs-sm);font-weight:700;color:var(--dark);margin-bottom:1rem}
+.skill-row{margin-bottom:.9rem}
+.skill-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:.3rem}
+.skill-label{font-size:var(--fs-sm);font-weight:500;color:var(--dark2)}
+.skill-pct{font-size:var(--fs-xs);font-weight:700;color:var(--accent)}
+.skill-track{width:100%;height:5px;background:var(--border);border-radius:3px;overflow:hidden}
+.skill-bar{height:100%;background:var(--accent);border-radius:3px;width:0;transition:width 1.2s ease}
+.hero-why-col p{font-size:var(--fs-sm);color:var(--muted);line-height:var(--lh);margin-bottom:1.2rem}
+.why-btns{display:flex;gap:.6rem;flex-wrap:wrap}
+.hero-right{background:transparent;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:3.5rem 2.5rem;position:relative;overflow:hidden}
+.hero-photo-wrap{position:relative;width:240px;margin-bottom:1.5rem}
+.hero-photo{width:240px;height:300px;border-radius:12px;overflow:hidden;box-shadow:var(--shadow2)}
+.hero-photo img{width:100%;height:100%;object-fit:cover;display:block}
+.hero-badge{position:absolute;bottom:-12px;right:-12px;background:var(--accent);color:#fff;border-radius:8px;padding:.65rem .9rem;box-shadow:var(--shadow2)}
+.hero-badge-num{font-family:var(--serif);font-size:1.3rem;display:block;line-height:1}
+.hero-badge-lbl{font-size:.58rem;text-transform:uppercase;letter-spacing:.1em;opacity:.85}
+
+/* ══ CAROUSEL ══ */
+.carousel-wrap{position:relative;overflow:hidden}
+.carousel-track{display:flex;gap:1.2rem;transition:transform .4s cubic-bezier(.25,.8,.25,1)}
+.carousel-track>*{flex:0 0 calc(33.333% - .8rem);min-width:0}
+.carousel-nav{display:flex;gap:.6rem;justify-content:center;margin-top:1.5rem}
+.carousel-nav button{width:34px;height:34px;border-radius:50%;background:var(--white);border:1.5px solid var(--border);cursor:pointer;font-size:.9rem;display:flex;align-items:center;justify-content:center;transition:.2s;color:var(--dark)}
+.carousel-nav button:hover{background:var(--accent);border-color:var(--accent);color:#fff}
+.carousel-dots{display:flex;gap:.4rem;justify-content:center;margin-top:.8rem}
+.carousel-dots span{width:7px;height:7px;border-radius:50%;background:var(--border);cursor:pointer;transition:.2s}
+.carousel-dots span.active{background:var(--accent);width:20px;border-radius:4px}
+@media(max-width:960px){.carousel-track>*{flex:0 0 calc(50% - .6rem)}}
+@media(max-width:640px){.carousel-track>*{flex:0 0 100%}}
+
+/* ══ OFFER ══ */
+#offer{background:var(--off)}
+.offer-card{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);padding:1.8rem;transition:.25s;color:var(--dark);height:100%}
+.offer-card:hover{box-shadow:var(--shadow2);transform:translateY(-4px);border-color:var(--accent)}
+.offer-icon{width:44px;height:44px;background:rgba(224,92,64,.1);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;margin-bottom:1.1rem}
+.offer-card h4{font-size:var(--fs-lg);font-weight:700;margin-bottom:.45rem;color:var(--dark)}
+.offer-card p{font-size:var(--fs-sm);line-height:var(--lh)}
+
+/* ══ PORTFOLIO ══ */
+#portfolio{background:var(--white)}
+.port-filters{display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:2rem}
+.filter-btn{background:var(--off);border:1px solid var(--border);color:var(--muted);padding:.38rem 1.05rem;border-radius:2rem;font-size:var(--fs-xs);font-weight:500;cursor:pointer;transition:.2s;font-family:var(--font)}
+.filter-btn.active,.filter-btn:hover{background:var(--accent);border-color:var(--accent);color:#fff}
+.port-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:1.2rem}
+.port-card{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;transition:.25s}
+.port-card:hover{box-shadow:var(--shadow2);transform:translateY(-4px)}
+.port-thumb{height:175px;background:var(--off2);display:flex;align-items:center;justify-content:center;font-size:3.2rem;position:relative;overflow:hidden}
+.port-thumb-overlay{position:absolute;inset:0;background:rgba(224,92,64,0);transition:.3s;display:flex;align-items:center;justify-content:center}
+.port-card:hover .port-thumb-overlay{background:rgba(224,92,64,.88)}
+.port-thumb-overlay span{color:#fff;font-size:var(--fs-xs);font-weight:700;letter-spacing:.12em;text-transform:uppercase;opacity:0;transition:.3s}
+.port-card:hover .port-thumb-overlay span{opacity:1}
+.port-body{padding:1.1rem 1.2rem}
+.port-cat{font-size:var(--fs-xs);text-transform:uppercase;letter-spacing:.12em;color:var(--accent);font-weight:600;margin-bottom:.25rem}
+.port-body h4{font-size:var(--fs-base);font-weight:700;color:var(--dark);margin-bottom:.25rem}
+.port-body p{font-size:var(--fs-sm);line-height:var(--lh)}
+
+/* ══ BRANDS ══ */
+#brands{background:var(--off);padding:4rem 5%}
+.brands-wrap{margin-top:1.8rem;display:flex;flex-wrap:wrap;gap:.7rem;justify-content:center}
+.brand-chip{background:var(--white);border:1px solid var(--border);border-radius:4px;padding:.5rem 1.2rem;font-size:var(--fs-sm);font-weight:500;color:var(--dark2);transition:.2s}
+.brand-chip:hover{border-color:var(--accent);color:var(--accent)}
+
+/* ══ TESTIMONIALS ══ */
+#testimonials{background:var(--white)}
+.testi-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1.4rem}
+.testi-card{background:var(--off);border-radius:var(--radius);padding:1.8rem;position:relative;border:1px solid var(--border)}
+.quote{font-family:var(--serif);font-size:5rem;line-height:.6;color:var(--accent);opacity:.2;position:absolute;top:1.2rem;left:1.5rem}
+.testi-text{font-size:var(--fs-sm);color:var(--dark2);line-height:var(--lh);margin-bottom:1.3rem;position:relative;z-index:1}
+.testi-author{display:flex;align-items:center;gap:.8rem}
+.testi-avatar{width:40px;height:40px;border-radius:50%;background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.95rem;flex-shrink:0}
+.testi-name{font-size:var(--fs-sm);font-weight:700;color:var(--dark)}
+.testi-role{font-size:var(--fs-xs);color:var(--muted)}
+
+/* ══ ABOUT ══ */
+#about{background:var(--off)}
+.about-wrap{display:grid;grid-template-columns:1fr 1.3fr;gap:5rem;align-items:center}
+.about-img-col{position:relative}
+.about-photo{width:100%;aspect-ratio:3/4;border-radius:12px;overflow:hidden;box-shadow:var(--shadow2);position:relative}
+.about-photo img{width:100%;height:100%;object-fit:cover;display:block}
+.about-cert-badge{position:absolute;bottom:-14px;right:-14px;background:var(--accent);color:#fff;border-radius:8px;padding:.85rem 1rem;text-align:center;box-shadow:var(--shadow2)}
+.about-cert-num{font-family:var(--serif);font-size:1.5rem;line-height:1}
+.about-cert-lbl{font-size:.58rem;text-transform:uppercase;letter-spacing:.1em;opacity:.85}
+.about-stats{display:grid;grid-template-columns:1fr 1fr;gap:.8rem;margin:1.6rem 0}
+.stat-box{background:var(--white);border:1px solid var(--border);border-radius:8px;padding:1rem;text-align:center}
+.stat-n{font-family:var(--serif);font-size:1.9rem;color:var(--accent)}
+.stat-l{font-size:var(--fs-xs);text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-top:.2rem}
+
+/* ══ SKILLS ══ */
+#skills{background:var(--white)}
+.cap-tabs{display:flex;border-bottom:2px solid var(--border);margin-bottom:2.2rem;overflow-x:auto}
+.cap-tab{padding:.85rem 1.5rem;font-size:var(--fs-xs);text-transform:uppercase;letter-spacing:.12em;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px;transition:.2s;white-space:nowrap;background:none;border-top:none;border-left:none;border-right:none;font-family:var(--font);font-weight:600}
+.cap-tab.active{color:var(--accent);border-bottom-color:var(--accent)}
+.cap-panel{display:none;grid-template-columns:1.2fr 1fr;gap:3rem;align-items:start}
+.cap-panel.active{display:grid}
+.cap-desc{font-size:var(--fs-base);color:var(--muted);line-height:var(--lh);margin-bottom:1.4rem}
+.cap-tags{display:flex;flex-wrap:wrap;gap:.45rem}
+.cap-tag{font-size:var(--fs-xs);font-weight:500;color:var(--dark2);background:var(--off);border:1px solid var(--border);padding:.35rem .9rem;border-radius:3px;transition:.2s}
+.cap-tag:hover{background:var(--accent);color:#fff;border-color:var(--accent)}
+.cap-visual{background:var(--off);border-radius:12px;height:220px;display:flex;align-items:center;justify-content:center;border:1px solid var(--border);overflow:hidden;font-size:5rem}
+
+/* ══ BLOG ══ */
+#blog{background:var(--off)}
+.blog-card{background:var(--white);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow);transition:.25s;border:1px solid var(--border);height:100%;display:flex;flex-direction:column;}
+.blog-card:hover{box-shadow:var(--shadow2);transform:translateY(-4px)}
+.blog-thumb{height:165px;background:var(--off2);display:flex;align-items:center;justify-content:center;font-size:2.8rem}
+.blog-body{padding:1.3rem;flex:1;display:flex;flex-direction:column;}
+.blog-meta{display:flex;gap:.7rem;margin-bottom:.55rem}
+.blog-cat{font-size:var(--fs-xs);text-transform:uppercase;letter-spacing:.1em;color:var(--accent);font-weight:600}
+.blog-date{font-size:var(--fs-xs);color:var(--muted2)}
+.blog-card h4{font-size:var(--fs-base);font-weight:700;color:var(--dark);line-height:1.45;margin-bottom:.4rem}
+.blog-card p{font-size:var(--fs-sm);line-height:var(--lh);flex:1}
+.blog-read{display:inline-flex;align-items:center;gap:.3rem;margin-top:.8rem;font-size:var(--fs-sm);color:var(--accent);font-weight:600;transition:gap .2s}
+.blog-read:hover{gap:.55rem}
+
+/* ══ STATS STRIP ══ */
+.stats-strip{background:var(--dark);padding:3.2rem 5%}
+.stats-inner{display:grid;grid-template-columns:repeat(4,1fr);gap:2rem;text-align:center;max-width:900px;margin:0 auto}
+.strip-num{font-family:var(--serif);font-size:2.6rem;color:var(--accent);display:block;line-height:1}
+.strip-lbl{font-size:var(--fs-xs);text-transform:uppercase;letter-spacing:.13em;color:#999;margin-top:.3rem;display:block}
+
+/* ══ CONTACT ══ */
+#contact{background:var(--off)}
+.contact-wrap{display:grid;grid-template-columns:1fr 1fr;gap:5rem;align-items:start}
+.contact-left h2{font-family:var(--serif);font-size:clamp(2rem,4vw,2.8rem);line-height:1.15;color:var(--dark);margin-bottom:.4rem}
+.contact-left h2 span{color:var(--accent)}
+.contact-info{display:flex;flex-direction:column;gap:.65rem;margin:1.5rem 0}
+.c-info-row{display:flex;align-items:center;gap:.75rem;font-size:var(--fs-sm);color:var(--dark2)}
+.c-info-icon{width:32px;height:32px;background:rgba(224,92,64,.1);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:.9rem;flex-shrink:0}
+.socials{display:flex;gap:.65rem;margin-top:1rem}
+.soc{width:36px;height:36px;border:1.5px solid var(--border);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:.78rem;color:var(--muted);transition:.2s;font-weight:700}
+.soc:hover{border-color:var(--accent);color:var(--accent)}
+.contact-form{display:flex;flex-direction:column;gap:.85rem}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:.85rem}
+.contact-form input,.contact-form textarea{background:var(--white);border:1.5px solid var(--border);color:var(--dark);padding:.82rem 1.05rem;border-radius:6px;font-size:var(--fs-sm);font-family:var(--font);transition:.2s;outline:none;width:100%}
+.contact-form input:focus,.contact-form textarea:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(224,92,64,.1)}
+.contact-form textarea{resize:vertical;min-height:115px}
+.contact-form input::placeholder,.contact-form textarea::placeholder{color:var(--muted2)}
+
+/* ══ FOOTER ══ */
+footer{background:var(--dark);padding:1.5rem 5%;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:.8rem}
+.foot-logo{font-family:var(--serif);font-size:1.1rem;color:var(--white)}
+.foot-logo span{color:var(--accent)}
+.foot-copy{font-size:var(--fs-xs);color:#777}
+.foot-links{display:flex;gap:1.4rem}
+.foot-links a{font-size:var(--fs-xs);color:#777;transition:.2s}
+.foot-links a:hover{color:#fff}
+
+/* ══ RESPONSIVE ══ */
+@media(max-width:1024px){.hero-bottom{grid-template-columns:1fr}}
+@media(max-width:960px){
+  #home{grid-template-columns:1fr}
+  .hero-right{display:none}
+  .hero-left{padding:4rem 5%}
+  .about-wrap,.contact-wrap{grid-template-columns:1fr}
+  .about-img-col{display:none}
+  .stats-inner{grid-template-columns:1fr 1fr}
+  .cap-panel{grid-template-columns:1fr}
+  .cap-visual{display:none}
+  .form-row{grid-template-columns:1fr}
+}
+@media(max-width:768px){
+  nav{padding:1rem 5%}
+  .nav-links,.nav-cta{display:none}
+  .hamburger{display:flex}
+  section{padding:3.5rem 5%}
+  footer{flex-direction:column;text-align:center}
+}
+</style>
+</head>
+<body>
+
+<!-- ============================================================
+     HERO ZONE — Background photo + Topbar + Nav + Hero Section
+     ============================================================ -->
+<div id="hero-zone">
+
+  <!-- ╔══════════════════════════════════════════════════════╗
+       ║  BACKGROUND PHOTO PLACEHOLDER                       ║
+       ║  Replace "YOUR_BACKGROUND_PHOTO_URL_HERE" with the  ║
+       ║  actual image URL (e.g. assets/hero-bg.jpg or a     ║
+       ║  hosted URL). Adjust overlay opacity in CSS above:  ║
+       ║  #photo-bg::after { background: rgba(247,245,242,   ║
+       ║  0.82); }  — lower = more photo visible.            ║
+       ╚══════════════════════════════════════════════════════╝ -->
+  <div id="photo-bg">
+    <img src="YOUR_BACKGROUND_PHOTO_URL_HERE" alt="Hero Background"/>
+  </div>
+
+  <!-- TOPBAR -->
+  <div class="topbar">
+    <span>nikhilpote51992@email.com &nbsp;·&nbsp; 📍 Pune, India</span>
+    <div>
+      <a href="https://www.linkedin.com/in/nikhilpote/" target="_blank">LinkedIn</a>
+      <a href="https://github.com/nikhilpote23" target="_blank" style="margin-left:1.2rem">GitHub</a>
+      <a href="https://www.salesforce.com/trailblazer/npote3" target="_blank" style="margin-left:1.2rem">Trailhead</a>
+    </div>
+  </div>
+
+  <!-- NAV -->
+  <nav>
+    <a class="nav-logo" href="#home">Nikhil<span> Pote</span></a>
+    <ul class="nav-links">
+      <li><a href="#home">Home</a></li>
+      <li><a href="#offer">Services</a></li>
+      <li><a href="#portfolio">Portfolio</a></li>
+      <li><a href="#skills">Skills</a></li>
+      <li><a href="#blog">Blog</a></li>
+      <li><a href="#about">About</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+    <a href="#contact" class="nav-cta">Get In Touch</a>
+    <button class="hamburger" onclick="openMob()"><span></span><span></span><span></span></button>
+  </nav>
+
+  <!-- HERO -->
+  <section id="home">
+    <div class="hero-left">
+      <div class="hero-tag">Salesforce Architect &amp; AI Enthusiast</div>
+      <h1 class="hero-title">
+        Hello I'm<br>
+        <span class="line2">Nikhil Pote</span>
+      </h1>
+      <p class="hero-desc">Blending deep Salesforce expertise with cutting-edge AI to architect scalable, intelligent enterprise systems that deliver real business impact.</p>
+      <div class="hero-btns">
+        <a href="#contact" class="btn btn-accent">Get In Touch</a>
+        <!-- ╔══════════════════════════════════════════════════╗
+             ║  CV DOWNLOAD LINK                               ║
+             ║  Replace "YOUR_CV_DOWNLOAD_URL_HERE" with the   ║
+             ║  direct link to your CV file (Google Drive,     ║
+             ║  Dropbox, or a file in your GitHub repo).       ║
+             ╚══════════════════════════════════════════════════╝ -->
+        <a href="YOUR_CV_DOWNLOAD_URL_HERE" download class="btn btn-outline">⬇ Download CV</a>
+      </div>
+      <div class="hero-bottom">
+        <div class="hero-skills-col">
+          <h5>My Skills</h5>
+          <div class="skill-row">
+            <div class="skill-top"><span class="skill-label">Salesforce Architecture</span><span class="skill-pct">95%</span></div>
+            <div class="skill-track"><div class="skill-bar" data-w="95"></div></div>
+          </div>
+          <div class="skill-row">
+            <div class="skill-top"><span class="skill-label">Agentforce / LLMs</span><span class="skill-pct">85%</span></div>
+            <div class="skill-track"><div class="skill-bar" data-w="85"></div></div>
+          </div>
+          <div class="skill-row">
+            <div class="skill-top"><span class="skill-label">Integration &amp; Security</span><span class="skill-pct">95%</span></div>
+            <div class="skill-track"><div class="skill-bar" data-w="95"></div></div>
+          </div>
+          <div class="skill-row">
+            <div class="skill-top"><span class="skill-label">Solution Architecture</span><span class="skill-pct">90%</span></div>
+            <div class="skill-track"><div class="skill-bar" data-w="90"></div></div>
+          </div>
+        </div>
+        <div class="hero-why-col">
+          <h5>Why Hire Me?</h5>
+          <p>I bridge business strategy and technical execution — designing AI-native Salesforce solutions that scale, integrate, and evolve with your business.</p>
+          <p>With 12+ years and 18 certifications, I bring deep expertise and a pragmatic, outcome-focused approach to every engagement.</p>
+          <div class="why-btns">
+            <a href="#contact" class="btn btn-accent">Hire Me</a>
+            <a href="YOUR_CV_DOWNLOAD_URL_HERE" download class="btn btn-outline">⬇ Download CV</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="hero-right">
+      <div class="hero-photo-wrap">
+        <!-- ╔════════════════════════════════════════════════════╗
+             ║  PROFILE PHOTO PLACEHOLDER                        ║
+             ║  Replace "YOUR_PROFILE_PHOTO_URL_HERE" with the   ║
+             ║  actual image URL (e.g. assets/profile.jpg or a   ║
+             ║  hosted URL). Photo displays at 240×300px,        ║
+             ║  cropped to fill with object-fit:cover.           ║
+             ╚════════════════════════════════════════════════════╝ -->
+        <div class="hero-photo">
+          <img src="YOUR_PROFILE_PHOTO_URL_HERE" alt="Nikhil Pote"/>
+        </div>
+        <div class="hero-badge">
+          <span class="hero-badge-num">12+</span>
+          <span class="hero-badge-lbl">Years Exp.</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</div><!-- end #hero-zone -->
+
+<!-- Mobile menu -->
+<div class="mob-overlay" id="mobOverlay" onclick="closeMob()"></div>
+<div class="mob-menu" id="mobMenu">
+  <button class="mob-close" onclick="closeMob()">✕</button>
+  <a href="#home" onclick="closeMob()">Home</a>
+  <a href="#offer" onclick="closeMob()">Services</a>
+  <a href="#portfolio" onclick="closeMob()">Portfolio</a>
+  <a href="#skills" onclick="closeMob()">Skills</a>
+  <a href="#blog" onclick="closeMob()">Blog</a>
+  <a href="#about" onclick="closeMob()">About</a>
+  <a href="#contact" onclick="closeMob()">Contact</a>
+</div>
+
+<!-- ══ WHAT I OFFER ══ -->
+<section id="offer">
+  <div class="center" style="margin-bottom:2.5rem">
+    <span class="sec-eyebrow">Services</span>
+    <h2 class="sec-title">What I Offer</h2>
+    <div class="sec-divider"></div>
+    <p class="sec-sub">Designing AI-Powered Solutions &amp; Architecting Salesforce Success from Vision to Reality</p>
+  </div>
+  <div class="carousel-wrap">
+    <div class="carousel-track" id="offerTrack">
+      <div class="offer-card"><div class="offer-icon">☁️</div><h4>Salesforce Architecture</h4><p>End-to-end solution design across Sales, Service, Marketing &amp; Experience Cloud. Scalability built-in from day one.</p></div>
+      <div class="offer-card"><div class="offer-icon">🤖</div><h4>AI &amp; Einstein Expertise</h4><p>Embedding LLMs, Einstein GPT, and custom AI models into Salesforce workflows for intelligent automation.</p></div>
+      <div class="offer-card"><div class="offer-icon">🔗</div><h4>Integrations &amp; Security</h4><p>Connecting Salesforce to ERPs, databases, and third-party systems via MuleSoft/Workato, REST APIs, and event streaming ensuring security &amp; proper governance.</p></div>
+      <div class="offer-card"><div class="offer-icon">📊</div><h4>Analytics &amp; Reporting</h4><p>Real-time dashboards and revenue intelligence using Salesforce reporting, Tableau CRM &amp; Einstein Analytics for data-driven decisions.</p></div>
+      <div class="offer-card"><div class="offer-icon">🛡️</div><h4>Governance &amp; Security</h4><p>Designing robust sharing models, permission frameworks, and compliance architectures across Salesforce orgs.</p></div>
+      <div class="offer-card"><div class="offer-icon">🚀</div><h4>DevOps &amp; CI/CD</h4><p>Building automated release pipelines, sandbox strategies, and deployment frameworks for agile Salesforce teams.</p></div>
+    </div>
+  </div>
+  <div class="carousel-nav">
+    <button onclick="slide('offerTrack','offerDots',-1)">&#8592;</button>
+    <button onclick="slide('offerTrack','offerDots',1)">&#8594;</button>
+  </div>
+  <div class="carousel-dots" id="offerDots"></div>
+</section>
+
+<!-- ══ PORTFOLIO ══ -->
+<section id="portfolio">
+  <div class="center" style="margin-bottom:2rem">
+    <span class="sec-eyebrow">Work</span>
+    <h2 class="sec-title">Portfolio</h2>
+    <div class="sec-divider"></div>
+  </div>
+  <div class="port-filters">
+    <button class="filter-btn active" onclick="filterPort(this,'all')">All</button>
+    <button class="filter-btn" onclick="filterPort(this,'ai')">AI / Einstein</button>
+    <button class="filter-btn" onclick="filterPort(this,'architecture')">Architecture</button>
+    <button class="filter-btn" onclick="filterPort(this,'integration')">Integration</button>
+    <button class="filter-btn" onclick="filterPort(this,'analytics')">Analytics</button>
+  </div>
+  <div class="port-grid">
+    <div class="port-card" data-cat="ai"><div class="port-thumb">🧠<div class="port-thumb-overlay"><span>View Project</span></div></div><div class="port-body"><div class="port-cat">AI / Einstein</div><h4>CPQ AI</h4><p>AI Powered conversational assistant simplifying quoting workflows within Salesforce CPQ.</p></div></div>
+    <div class="port-card" data-cat="architecture"><div class="port-thumb">⚡<div class="port-thumb-overlay"><span>View Project</span></div></div><div class="port-body"><div class="port-cat">Architecture</div><h4>Enterprise Multi-Org Consolidation</h4><p>Unified 3 business units into a single Salesforce platform with full governance model.</p></div></div>
+    <div class="port-card" data-cat="ai"><div class="port-thumb">💬<div class="port-thumb-overlay"><span>View Project</span></div></div><div class="port-body"><div class="port-cat">AI / Einstein</div><h4>GPT Service Cloud Chatbot</h4><p>Reduced support tickets by 40% with an LLM-native service agent inside Service Cloud.</p></div></div>
+    <div class="port-card" data-cat="analytics"><div class="port-thumb">📊<div class="port-thumb-overlay"><span>View Project</span></div></div><div class="port-body"><div class="port-cat">Analytics</div><h4>Revenue Intelligence Dashboard</h4><p>360° pipeline visibility with predictive forecasting powered by Einstein Analytics.</p></div></div>
+    <div class="port-card" data-cat="integration"><div class="port-thumb">🔗<div class="port-thumb-overlay"><span>View Project</span></div></div><div class="port-body"><div class="port-cat">Integration</div><h4>MuleSoft ERP Integration Platform</h4><p>Unified SAP and Salesforce data flows across 5 enterprise systems in real time.</p></div></div>
+    <div class="port-card" data-cat="architecture"><div class="port-thumb">🏥<div class="port-thumb-overlay"><span>View Project</span></div></div><div class="port-body"><div class="port-cat">Architecture</div><h4>Custom Health Cloud</h4><p>Custom solution for Patient management and care coordination platform built on Salesforce.</p></div></div>
+  </div>
+</section>
+
+<!-- ══ PLATFORMS ══ -->
+<section id="brands">
+  <div class="center" style="margin-bottom:1.5rem">
+    <span class="sec-eyebrow">Experience</span>
+    <h2 class="sec-title">Platforms I Work With</h2>
+    <div class="sec-divider"></div>
+  </div>
+  <div class="brands-wrap">
+    <div class="brand-chip">Salesforce</div><div class="brand-chip">Agentforce/Einstein</div>
+    <div class="brand-chip">Agentic Platforms</div><div class="brand-chip">OpenAI/GPT</div>
+    <div class="brand-chip">Data Cloud</div><div class="brand-chip">Mulesoft</div>
+    <div class="brand-chip">Workato</div><div class="brand-chip">AWS</div>
+    <div class="brand-chip">SAP</div><div class="brand-chip">Glean</div>
+    <div class="brand-chip">Slack</div><div class="brand-chip">Jira</div>
+  </div>
+</section>
+
+<!-- ══ TESTIMONIALS ══ -->
+<section id="testimonials">
+  <div class="center" style="margin-bottom:2.5rem">
+    <span class="sec-eyebrow">Testimonials</span>
+    <h2 class="sec-title">What Clients Say</h2>
+    <div class="sec-divider"></div>
+  </div>
+  <div class="testi-grid">
+    <div class="testi-card"><div class="quote">"</div><p class="testi-text">Working with this architect transformed our Salesforce org. The AI integration alone saved our team 15 hours a week. Truly next-level expertise and a trusted partner.</p><div class="testi-author"><div class="testi-avatar">S</div><div><div class="testi-name">Sarah Mitchell</div><div class="testi-role">VP Operations — TechCorp</div></div></div></div>
+    <div class="testi-card"><div class="quote">"</div><p class="testi-text">The multi-org consolidation project was delivered on time, under budget, and exceeded every technical requirement. An exceptional Salesforce partner we keep coming back to.</p><div class="testi-author"><div class="testi-avatar">J</div><div><div class="testi-name">James Patel</div><div class="testi-role">CTO — Finova Group</div></div></div></div>
+    <div class="testi-card"><div class="quote">"</div><p class="testi-text">Deep knowledge of both Salesforce and AI ecosystems. Helped us build something we didn't think was possible in our timeline. Highly recommended for any enterprise project.</p><div class="testi-author"><div class="testi-avatar">P</div><div><div class="testi-name">Priya Sharma</div><div class="testi-role">Head of Digital — MedGroup</div></div></div></div>
+  </div>
+</section>
+
+<!-- ══ ABOUT ══ -->
+<section id="about">
+  <div class="about-wrap">
+    <div class="about-img-col">
+      <!-- ╔════════════════════════════════════════════════════╗
+           ║  ABOUT SECTION PHOTO PLACEHOLDER                  ║
+           ║  Same image as profile photo is recommended.      ║
+           ║  Replace "YOUR_PROFILE_PHOTO_URL_HERE" below.     ║
+           ╚════════════════════════════════════════════════════╝ -->
+      <div class="about-photo">
+        <img src="YOUR_PROFILE_PHOTO_URL_HERE" alt="Nikhil Pote"/>
+        <div class="about-cert-badge">
+          <div class="about-cert-num">18</div>
+          <div class="about-cert-lbl">Certifications</div>
+        </div>
+      </div>
+    </div>
+    <div>
+      <span class="sec-eyebrow">About Me</span>
+      <h2 class="sec-title">Building tomorrow's enterprise, today.</h2>
+      <div class="sec-divider"></div>
+      <p style="margin-bottom:.8rem">I'm a Salesforce Architect and AI Enthusiast with a passion for designing AI-powered, scalable, intelligent systems that solve real business problems. I specialize in transforming complex requirements into elegant, future-ready architectures.</p>
+      <p style="margin-bottom:1.5rem">With experience across industries, I bridge the gap between business strategy and technical execution — ensuring every solution is built to last, built to scale, and built to evolve with AI.</p>
+      <div class="about-stats">
+        <div class="stat-box"><div class="stat-n">12+</div><div class="stat-l">Years Exp.</div></div>
+        <div class="stat-box"><div class="stat-n">80+</div><div class="stat-l">Projects</div></div>
+        <div class="stat-box"><div class="stat-n">18</div><div class="stat-l">Salesforce Certifications</div></div>
+        <div class="stat-box"><div class="stat-n">80+</div><div class="stat-l">Happy Clients</div></div>
+      </div>
+      <a href="#contact" class="btn btn-accent">Let's Work Together</a>
+    </div>
+  </div>
+</section>
+
+<!-- ══ CAPABILITIES ══ -->
+<section id="skills">
+  <span class="sec-eyebrow">Capabilities</span>
+  <h2 class="sec-title">What I Bring to the Table</h2>
+  <div class="sec-divider"></div>
+  <div class="cap-tabs">
+    <button class="cap-tab active" onclick="capTab(0)">Salesforce</button>
+    <button class="cap-tab" onclick="capTab(1)">AI / ML</button>
+    <button class="cap-tab" onclick="capTab(2)">Architecture</button>
+    <button class="cap-tab" onclick="capTab(3)">Integration</button>
+  </div>
+  <div class="cap-panel active">
+    <div>
+      <p class="cap-desc">Deep expertise across the full Salesforce platform — from CRM configuration to custom development and multi-cloud solutions.</p>
+      <div class="cap-tags"><span class="cap-tag">Sales Cloud</span><span class="cap-tag">Service Cloud</span><span class="cap-tag">Agentforce</span><span class="cap-tag">Experience Cloud</span><span class="cap-tag">Platform Configuration</span><span class="cap-tag">Apex</span><span class="cap-tag">LWC</span><span class="cap-tag">Flow Builder</span><span class="cap-tag">Tableau CRM</span><span class="cap-tag">CPQ</span><span class="cap-tag">Marketing Cloud</span><span class="cap-tag">Field Service</span></div>
+    </div>
+    <div class="cap-visual">☁️</div>
+  </div>
+  <div class="cap-panel">
+    <div>
+      <p class="cap-desc">Leveraging modern AI and large language models to build intelligent, automated, and predictive enterprise solutions.</p>
+      <div class="cap-tags"><span class="cap-tag">Agentforce</span><span class="cap-tag">Einstein</span><span class="cap-tag">Prompt Engineering</span><span class="cap-tag">OpenAI / GPT</span><span class="cap-tag">Bedrock</span><span class="cap-tag">Data Cloud</span><span class="cap-tag">Glean</span><span class="cap-tag">Clari</span><span class="cap-tag">Statisfy</span></div>
+    </div>
+    <div class="cap-visual">🤖</div>
+  </div>
+  <div class="cap-panel">
+    <div>
+      <p class="cap-desc">Designing robust, scalable, and maintainable enterprise architectures that align technical decisions with business strategy.</p>
+      <div class="cap-tags"><span class="cap-tag">Solution Architecture</span><span class="cap-tag">Multi-Org Strategy</span><span class="cap-tag">Data Modeling</span><span class="cap-tag">Governance</span><span class="cap-tag">Security Model</span><span class="cap-tag">DevOps / CI/CD</span><span class="cap-tag">Technical Roadmapping</span><span class="cap-tag">Enterprise Design</span></div>
+    </div>
+    <div class="cap-visual">🏗️</div>
+  </div>
+  <div class="cap-panel">
+    <div>
+      <p class="cap-desc">Connecting Salesforce with the broader enterprise ecosystem through modern integration patterns and middleware platforms.</p>
+      <div class="cap-tags"><span class="cap-tag">REST / SOAP APIs</span><span class="cap-tag">MuleSoft</span><span class="cap-tag">Platform Events</span><span class="cap-tag">Change Data Capture</span><span class="cap-tag">SAP</span><span class="cap-tag">AWS / Azure</span><span class="cap-tag">Workato</span><span class="cap-tag">Middleware Design</span></div>
+    </div>
+    <div class="cap-visual">🔗</div>
+  </div>
+</section>
+
+<!-- ══ BLOG ══ -->
+<section id="blog">
+  <div class="center" style="margin-bottom:2rem">
+    <span class="sec-eyebrow">Blog</span>
+    <h2 class="sec-title">Sharing from experience</h2>
+    <div class="sec-divider"></div>
+    <p class="sec-sub">Code, Cloud, and Cognitive: A Salesforce Architect's AI Journey</p>
+  </div>
+  <div class="carousel-wrap">
+    <div class="carousel-track" id="blogTrack">
+      <!-- ╔══════════════════════════════════════════════════════╗
+           ║  BLOG LINKS — Replace each YOUR_BLOG_N_LINK_HERE    ║
+           ║  with the actual URL of the published blog post.    ║
+           ╚══════════════════════════════════════════════════════╝ -->
+      <a class="blog-card" href="YOUR_BLOG_1_LINK_HERE" target="_blank" style="text-decoration:none;color:inherit">
+        <div class="blog-thumb">🧠</div>
+        <div class="blog-body"><div class="blog-meta"><span class="blog-cat">AI + Salesforce</span><span class="blog-date">Jan 2025</span></div><h4>How Einstein GPT Is Redefining CRM Automation in 2025</h4><p>A deep dive into how generative AI is reshaping Salesforce workflows and what architects need to know.</p><span class="blog-read">Read More →</span></div>
+      </a>
+      <a class="blog-card" href="YOUR_BLOG_2_LINK_HERE" target="_blank" style="text-decoration:none;color:inherit">
+        <div class="blog-thumb">🏗️</div>
+        <div class="blog-body"><div class="blog-meta"><span class="blog-cat">Architecture</span><span class="blog-date">Nov 2024</span></div><h4>Multi-Org vs. Single-Org: Making the Right Call for Your Enterprise</h4><p>A framework for evaluating org strategy and the hidden trade-offs most architects overlook.</p><span class="blog-read">Read More →</span></div>
+      </a>
+      <a class="blog-card" href="YOUR_BLOG_3_LINK_HERE" target="_blank" style="text-decoration:none;color:inherit">
+        <div class="blog-thumb">🔗</div>
+        <div class="blog-body"><div class="blog-meta"><span class="blog-cat">Integration</span><span class="blog-date">Sep 2024</span></div><h4>MuleSoft vs. Native APIs: When to Use Which</h4><p>Integration decisions have long-term consequences. Here's how to think through them before committing.</p><span class="blog-read">Read More →</span></div>
+      </a>
+      <a class="blog-card" href="YOUR_BLOG_4_LINK_HERE" target="_blank" style="text-decoration:none;color:inherit">
+        <div class="blog-thumb">⚡</div>
+        <div class="blog-body"><div class="blog-meta"><span class="blog-cat">DevOps</span><span class="blog-date">Jul 2024</span></div><h4>CI/CD for Salesforce: A Practical Guide for Architects</h4><p>How to build a reliable, fast, and repeatable deployment pipeline for Salesforce orgs of any size.</p><span class="blog-read">Read More →</span></div>
+      </a>
+      <a class="blog-card" href="YOUR_BLOG_5_LINK_HERE" target="_blank" style="text-decoration:none;color:inherit">
+        <div class="blog-thumb">🛡️</div>
+        <div class="blog-body"><div class="blog-meta"><span class="blog-cat">Governance</span><span class="blog-date">May 2024</span></div><h4>Building a Bulletproof Salesforce Security Model</h4><p>OWD, sharing rules, permission sets — a structured approach to designing Salesforce security from the ground up.</p><span class="blog-read">Read More →</span></div>
+      </a>
+    </div>
+  </div>
+  <div class="carousel-nav">
+    <button onclick="slide('blogTrack','blogDots',-1)">&#8592;</button>
+    <button onclick="slide('blogTrack','blogDots',1)">&#8594;</button>
+  </div>
+  <div class="carousel-dots" id="blogDots"></div>
+</section>
+
+<!-- ══ STATS ══ -->
+<div class="stats-strip">
+  <div class="stats-inner">
+    <div><span class="strip-num">80+</span><span class="strip-lbl">Projects Completed</span></div>
+    <div><span class="strip-num">80+</span><span class="strip-lbl">Happy Clients</span></div>
+    <div><span class="strip-num">18</span><span class="strip-lbl">Salesforce Certifications</span></div>
+    <div><span class="strip-num">12+</span><span class="strip-lbl">Years Experience</span></div>
+  </div>
+</div>
+
+<!-- ══ CONTACT ══ -->
+<section id="contact">
+  <div class="contact-wrap">
+    <div class="contact-left">
+      <span class="sec-eyebrow">Contact</span>
+      <h2>Let's work <span>together</span></h2>
+      <div class="sec-divider"></div>
+      <p>I'm available for freelance work and consulting. Have any projects in your mind? Just feel free to contact me.</p>
+      <div class="contact-info">
+        <div class="c-info-row"><div class="c-info-icon">✉️</div><a href="mailto:nikhilpote51992@gmail.com">nikhilpote51992@gmail.com</a></div>
+        <div class="c-info-row"><div class="c-info-icon">📍</div><span>Pune, India</span></div>
+        <div class="c-info-row"><div class="c-info-icon">📞</div><a href="tel:+918668683376">+91 (866) 868-3376</a></div>
+      </div>
+      <div class="socials">
+        <a class="soc" href="https://www.linkedin.com/in/nikhilpote/" target="_blank" title="LinkedIn">in</a>
+        <a class="soc" href="https://www.salesforce.com/trailblazer/npote3" target="_blank" title="Trailhead" style="font-size:.62rem;letter-spacing:-.5px">TH</a>
+        <a class="soc" href="mailto:nikhilpote51992@gmail.com" title="Email">✉</a>
+        <a class="soc" href="tel:+918668683376" title="Phone">📞</a>
+      </div>
+    </div>
+    <div>
+      <div class="contact-form">
+        <div class="form-row">
+          <input type="text" id="cf-name" placeholder="Your Name"/>
+          <input type="email" id="cf-email" placeholder="Your Email"/>
+        </div>
+        <input type="text" id="cf-subject" placeholder="Subject"/>
+        <textarea id="cf-message" placeholder="Tell me about your project…"></textarea>
+        <button class="btn btn-accent" style="align-self:flex-start" onclick="sendMessage()">Send Message</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ FOOTER ══ -->
+<footer>
+  <span class="foot-logo">Nikhil<span> Pote</span></span>
+  <span class="foot-copy">© 2025 · Salesforce Architect &amp; AI Enthusiast. All rights reserved.</span>
+  <div class="foot-links">
+    <a href="#home">Home</a><a href="#about">About</a><a href="#contact">Contact</a>
+  </div>
+</footer>
+
+<script>
+/* ══ CAROUSEL ══ */
+const cState={};
+function initCarousel(trackId,dotsId){
+  const track=document.getElementById(trackId);
+  const dotsEl=document.getElementById(dotsId);
+  const total=track.children.length;
+  cState[trackId]={pos:0,total};
+  function vc(){return window.innerWidth<=640?1:window.innerWidth<=960?2:3}
+  function buildDots(){
+    dotsEl.innerHTML='';
+    const pages=Math.ceil(total/vc());
+    for(let i=0;i<pages;i++){
+      const d=document.createElement('span');
+      if(i===0)d.classList.add('active');
+      d.onclick=()=>goTo(trackId,dotsId,i);
+      dotsEl.appendChild(d);
+    }
+  }
+  cState[trackId].vc=vc;
+  buildDots();
+  window.addEventListener('resize',()=>{buildDots();renderC(trackId,dotsId)});
+}
+function renderC(trackId,dotsId){
+  const track=document.getElementById(trackId);
+  const st=cState[trackId];
+  const vc=st.vc();
+  const max=Math.max(0,st.total-vc);
+  st.pos=Math.min(st.pos,max);
+  const iw=track.children[0].offsetWidth+19.2;
+  track.style.transform=`translateX(-${st.pos*iw}px)`;
+  const dots=document.getElementById(dotsId).children;
+  const pg=Math.min(Math.floor(st.pos/vc),dots.length-1);
+  for(let d of dots)d.classList.remove('active');
+  if(dots[pg])dots[pg].classList.add('active');
+}
+function slide(trackId,dotsId,dir){
+  const st=cState[trackId];
+  st.pos=Math.max(0,Math.min(st.pos+dir,Math.max(0,st.total-st.vc())));
+  renderC(trackId,dotsId);
+}
+function goTo(trackId,dotsId,page){
+  cState[trackId].pos=page*cState[trackId].vc();
+  renderC(trackId,dotsId);
+}
+
+/* ══ SKILL BARS ══ */
+function animateBars(){
+  document.querySelectorAll('.skill-bar').forEach(b=>b.style.width=b.dataset.w+'%');
+}
+
+/* ══ CONTACT FORM ══ */
+function sendMessage(){
+  const name=document.getElementById('cf-name').value.trim();
+  const email=document.getElementById('cf-email').value.trim();
+  const subject=document.getElementById('cf-subject').value.trim();
+  const msg=document.getElementById('cf-message').value.trim();
+  if(!name||!email||!msg){alert('Please fill in your name, email and message.');return;}
+  const body=`Name: ${name}%0AEmail: ${email}%0A%0AMessage:%0A${encodeURIComponent(msg)}`;
+  window.location.href=`mailto:nikhilpote51992@gmail.com?subject=${encodeURIComponent(subject||'Portfolio Enquiry — '+name)}&body=${body}`;
+}
+
+/* ══ MOBILE MENU ══ */
+function openMob(){document.getElementById('mobMenu').classList.add('open');document.getElementById('mobOverlay').style.display='block'}
+function closeMob(){document.getElementById('mobMenu').classList.remove('open');document.getElementById('mobOverlay').style.display='none'}
+
+/* ══ CAPABILITIES TABS ══ */
+const cPanels=document.querySelectorAll('.cap-panel'),cTabs=document.querySelectorAll('.cap-tab');
+function capTab(i){cTabs.forEach((t,j)=>t.classList.toggle('active',i===j));cPanels.forEach((p,j)=>p.classList.toggle('active',i===j))}
+
+/* ══ PORTFOLIO FILTER ══ */
+function filterPort(btn,cat){
+  document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.port-card').forEach(c=>{c.style.display=(cat==='all'||c.dataset.cat===cat)?'':'none'});
+}
+
+/* ══ NAV HIGHLIGHT ══ */
+const secs=document.querySelectorAll('section[id]'),nls=document.querySelectorAll('.nav-links a');
+window.addEventListener('scroll',()=>{
+  let cur='';
+  secs.forEach(s=>{if(scrollY>=s.offsetTop-130)cur=s.id});
+  nls.forEach(a=>a.classList.toggle('active',a.getAttribute('href')==='#'+cur));
+});
+
+/* ══ INIT ══ */
+window.addEventListener('load',()=>{
+  setTimeout(animateBars,400);
+  initCarousel('offerTrack','offerDots');
+  initCarousel('blogTrack','blogDots');
+});
+</script>
+</body>
+</html>
